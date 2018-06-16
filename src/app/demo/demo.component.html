@@ -1,0 +1,13 @@
+
+<div class="form-group">
+  <label for="theme-chooser">Choose Theme</label>
+  <select [formControl]="fc" class="form-control form-control-lg" id="theme-chooser">
+    <option *ngFor="let t of themes" [value]="t">{{t}}</option>
+  </select>
+  <div *ngIf="error" class="alert alert-danger mt-4">
+    The theme {{fc.value | json}} could not be found.
+  </div>
+  <div *ngIf="loading" class="alert alert-info mt-4">
+   Loading...
+  </div>
+</div>
