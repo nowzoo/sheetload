@@ -21,7 +21,7 @@ export class DemoSheetsComponent implements OnInit {
     {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/lux/bootstrap.min.css', label: 'Lux'},
     {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/materia/bootstrap.min.css', label: 'Materia'},
     {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/minty/bootstrap.min.css', label: 'Minty'},
-    {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/pulse/bootstrap.min.css', label: 'pulse'},
+    {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/pulse/bootstrap.min.css', label: 'Pulse'},
     {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/sandstone/bootstrap.min.css', label: 'Sandstone'},
     {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/simplex/bootstrap.min.css', label: 'Simplex'},
     {url: 'https://stackpath.bootstrapcdn.com/bootswatch/4.1.1/sketchy/bootstrap.min.css', label: 'Sketchy'},
@@ -54,7 +54,11 @@ export class DemoSheetsComponent implements OnInit {
     this.status = `Loading ${rec.label} from ${rec.url}...`;
     Sheetload.load(rec.url)
       .then((link: HTMLLinkElement) => {
-        this.status = `Loaded ${rec.label} from ${rec.url}!`;
+        if (event) {
+          this.status = `Loaded ${rec.label} from ${rec.url}!`;
+        } else {
+          this.status = null;
+        }
         if (this.link) {
           this.renderer.removeChild(document.head, this.link);
         }
