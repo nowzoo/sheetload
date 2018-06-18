@@ -37,29 +37,27 @@ Scriptload.load(url)
   })
 ```
 
-**Note:** You are responsible for tracking the script and link tags yourself.
-
 
 ## API
 
 ### `Sheetload`
 
 #### `static load(url: string): Promise<HTMLLinkElement>`
-Loads a stylesheet, resolving with the `link` tag when it loads.
+Loads a stylesheet, resolving with a newly created `link` element when it loads.
 
-**Note:** The link tag's `disabled` attribute is set. You are responsible for enabling it:
-```typescript
+**Note:** The element's `disabled` attribute is set. You are responsible for enabling it:
+```ts
 this.renderer.removeAttribute(link, 'disabled');
 ```
 
-**Note:** You are responsible for tracking the link tags yourself to prevent duplication.
+**Note:** The element is appended to `document.head`. You are responsible for tracking the link tags yourself to prevent duplication.
 
 ### `Scriptload`
 
 #### `static load(url: string): Promise<HTMLScriptElement>`
-Loads a script, resolving with a `script` tag when the script loads.
+Loads a script, resolving with a newly created `script` element when the script loads.
 
-**Note:** You are responsible for tracking the script tags yourself to prevent duplication.
+**Note:** The element is appended to `document.head`. You are responsible for tracking the script elements yourself to prevent duplication.
 
 ### `Elementload`
 
