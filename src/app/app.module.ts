@@ -3,18 +3,21 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AppComponent } from './app.component';
-import { DemoComponent } from './demo/demo.component';
+import { DemoScriptsComponent } from './demo-scripts/demo-scripts.component';
+import { DemoSheetsComponent } from './demo-sheets/demo-sheets.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    DemoComponent
+    DemoScriptsComponent,
+    DemoSheetsComponent
   ],
   imports: [
     BrowserModule, ReactiveFormsModule, HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    DemoScriptsComponent,
+    DemoSheetsComponent
+  ]
 })
 export class AppModule { }

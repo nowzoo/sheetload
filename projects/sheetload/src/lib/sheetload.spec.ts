@@ -1,118 +1,43 @@
 import { TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 
 import { Sheetload } from './sheetload';
+import { Elementload } from './elementload';
 
 describe('Sheetload', () => {
-  describe('getHeadElement()', () => {
-    it('should return document.head', () => {
-      expect(Sheetload.getHeadElement()).toBe(document.head);
-    });
+  let loadSpy;
+  let linkEl;
+  beforeEach(() => {
+    linkEl = document.createElement('link');
+    spyOn(linkEl, 'setAttribute').and.callThrough();
+    spyOn(document, 'createElement').and.returnValue(linkEl);
+    loadSpy = spyOn(Elementload, 'load').and.callFake((el) => Promise.resolve(el));
   });
-
+  it('should create the element correctly', () => {
+    Sheetload.load('http://localhost/foo.css');
+    expect(document.createElement).toHaveBeenCalledWith('link');
+    expect(linkEl.setAttribute).toHaveBeenCalledWith('rel', 'stylesheet');
+    expect(linkEl.setAttribute).toHaveBeenCalledWith('href', 'http://localhost/foo.css');
+  });
   describe('load(url)', () => {
-    let headEl: any;
-    let linkEl: any;
-    let url;
-    beforeEach(() => {
-      url = 'http://localhost/foo.css';
-      headEl = {
-        appendChild: jasmine.createSpy(),
-        removeChild: jasmine.createSpy()
-      };
-      linkEl = document.createElement('link');
-      spyOn(Sheetload, 'getHeadElement').and.returnValue(headEl);
-      spyOn(document, 'createElement').and.returnValue(linkEl);
-      spyOn(linkEl, 'addEventListener').and.callThrough();
-      spyOn(linkEl, 'removeEventListener').and.callThrough();
-      spyOn(linkEl, 'setAttribute').and.callThrough();
-    });
-    it('should create the link', fakeAsync(() => {
-      Sheetload.load(url);
-      expect(document.createElement).toHaveBeenCalledWith('link');
+    it('should reject if Elementload.load fails', fakeAsync(() => {
+      const err = new Error('foo');
+      loadSpy.and.callFake(() => Promise.reject(err));
+      let rejected;
+      Sheetload.load('http://localhost/foo.css').catch(e => rejected = e);
+      tick();
+      expect(rejected).toBe(err);
     }));
-    it('should set the rel attr', fakeAsync(() => {
-      Sheetload.load(url);
-      expect(linkEl.setAttribute).toHaveBeenCalledWith('rel', 'stylesheet');
-    }));
-    it('should set the href attr', fakeAsync(() => {
-      Sheetload.load(url);
-      expect(linkEl.setAttribute).toHaveBeenCalledWith('href', url);
-    }));
-    it('should set the load listener', fakeAsync(() => {
-      Sheetload.load(url);
-      expect(linkEl.addEventListener).toHaveBeenCalledWith('load', jasmine.any(Function));
-    }));
-    it('should set the error listener', fakeAsync(() => {
-      Sheetload.load(url);
-      expect(linkEl.addEventListener).toHaveBeenCalledWith('error', jasmine.any(Function));
-    }));
-    it('should append the link', fakeAsync(() => {
-      Sheetload.load(url);
-      expect(headEl.appendChild).toHaveBeenCalledWith(linkEl);
-    }));
-    it('should resolve with the link element when loaded', fakeAsync(() => {
+    it('should resolve with the link if Elementload.load succeeds', fakeAsync(() => {
       let resolved;
-      const event = new Event('load');
-      Sheetload.load(url).then((r) => resolved = r);
-      linkEl.dispatchEvent(event);
+      Sheetload.load('http://localhost/foo.css').then(r => resolved = r);
       tick();
       expect(resolved).toBe(linkEl);
     }));
-    it('should unlisten to the load event on success', fakeAsync(() => {
+    it('should set disabled on the link', fakeAsync(() => {
       let resolved;
-      const event = new Event('load');
-      Sheetload.load(url).then((r) => resolved = r);
-      linkEl.dispatchEvent(event);
-      tick();
-      expect(linkEl.removeEventListener).toHaveBeenCalledWith('load', jasmine.any(Function));
-    }));
-    it('should unlisten to the error event on success', fakeAsync(() => {
-      let resolved;
-      const event = new Event('load');
-      Sheetload.load(url).then((r) => resolved = r);
-      linkEl.dispatchEvent(event);
-      tick();
-      expect(linkEl.removeEventListener).toHaveBeenCalledWith('error', jasmine.any(Function));
-    }));
-    it('should set the disabled attr on the link', fakeAsync(() => {
-      let resolved;
-      const event = new Event('load');
-      Sheetload.load(url).then((r) => resolved = r);
-      linkEl.dispatchEvent(event);
+      Sheetload.load('http://localhost/foo.css').then(r => resolved = r);
       tick();
       expect(linkEl.setAttribute).toHaveBeenCalledWith('disabled', 'disabled');
-    }));
-    it('should reject with the event on failure', fakeAsync(() => {
-      let rejected;
-      const event = new Event('error');
-      Sheetload.load(url).catch((e) => rejected = e);
-      linkEl.dispatchEvent(event);
-      tick();
-      expect(rejected).toBe(event);
-    }));
-    it('should remove the link on error', fakeAsync(() => {
-      let rejected;
-      const event = new Event('error');
-      Sheetload.load(url).catch((e) => rejected = e);
-      linkEl.dispatchEvent(event);
-      tick();
-      expect(headEl.removeChild).toHaveBeenCalledWith(linkEl);
-    }));
-    it('should unlisten to load on error', fakeAsync(() => {
-      let rejected;
-      const event = new Event('error');
-      Sheetload.load(url).catch((e) => rejected = e);
-      linkEl.dispatchEvent(event);
-      tick();
-      expect(linkEl.removeEventListener).toHaveBeenCalledWith('load', jasmine.any(Function));
-    }));
-    it('should unlisten to error on error', fakeAsync(() => {
-      let rejected;
-      const event = new Event('error');
-      Sheetload.load(url).catch((e) => rejected = e);
-      linkEl.dispatchEvent(event);
-      tick();
-      expect(linkEl.removeEventListener).toHaveBeenCalledWith('error', jasmine.any(Function));
     }));
   });
 

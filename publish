@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# bump the version
+cd projects/sheetload
+VERSION="$(npm version patch)"
+cd ../..
+
+# build the lib
+ng build sheetload --prod
+cp README.md LICENSE dist/sheetload/
+
+# publish to NPM
+cd dist/sheetload
+npm publish
+cd ../..
+
+
+
+# build the demo
+ng build --aot --prod --base-href /sheetload/
+
+# write the version to the demo...
+# echo "${VERSION}" >> docs/VERSION
+
+
+
+# commit with tag
+git add -A
+git commit -m "published version ${VERSION} to npm"
+git tag  $VERSION
+git push
+git push --tags

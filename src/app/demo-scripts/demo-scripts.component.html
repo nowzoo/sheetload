@@ -1,0 +1,18 @@
+
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="loadScriptDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Load Script...
+  </button>
+  <div class="dropdown-menu" aria-labelledby="loadScriptDropdownMenuButton">
+    <a
+      href="#"
+      class="dropdown-item"
+      *ngFor="let s of scripts"
+      (click)="loadScript($event, s)">
+      {{s.label}}
+    </a>
+  </div>
+</div>
+<div *ngIf="error" class="alert alert-danger mt-2">{{error}}</div>
+<div *ngIf="status" class="alert alert-info mt-2">{{status}}</div>
+<div *ngIf="messageFromScript" class="alert alert-info mt-2">{{messageFromScript}}</div>

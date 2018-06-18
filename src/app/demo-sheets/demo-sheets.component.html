@@ -1,0 +1,17 @@
+
+<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="loadThemeDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Load Theme...
+  </button>
+  <div class="dropdown-menu" aria-labelledby="loadThemeDropdownMenuButton">
+    <a
+      href="#"
+      class="dropdown-item"
+      *ngFor="let s of themes"
+      (click)="loadTheme($event, s)">
+      {{s.label}}
+    </a>
+  </div>
+</div>
+<div *ngIf="error" class="alert alert-danger mt-2">{{error}}</div>
+<div *ngIf="status" class="alert alert-info mt-2">{{status}}</div>
